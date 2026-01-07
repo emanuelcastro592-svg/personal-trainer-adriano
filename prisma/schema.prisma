@@ -1,0 +1,72 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  name      String?
+  role      String   @default("client") // "client" | "admin"
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  createdTimeSlots TimeSlot[]
+}
+
+model TimeSlot {
+  id          String   @id @default(uuid())
+  date        String   // ISO date string
+  startTime   String   // HH:mm format
+  endTime     String   // HH:mm format
+  duration    Int      @default(60) // minutes
+  isAvailable Boolean  @default(true)
+  isBlocked   Boolean  @default(false)
+  createdBy   String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user        User           @relation(fields: [createdBy], references: [id])
+  appointments Appointment[]
+  altAppointments Appointment[] @relation("AlternativeTimeSlot")
+
+  @@index([date, startTime])
+}
+
+model Appointment {
+  id                    String   @id @default(uuid())
+  clientEmail           String
+  clientName            String?
+  timeSlotId            String
+  alternativeTimeSlotId String?
+  status                String   @default("scheduled") // "scheduled" | "rescheduled" | "cancelled" | "completed"
+  notes                 String?
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  timeSlot            TimeSlot @relation(fields: [timeSlotId], references: [id])
+  alternativeTimeSlot TimeSlot? @relation("AlternativeTimeSlot", fields: [alternativeTimeSlotId], references: [id])
+
+  @@index([clientEmail])
+  @@index([timeSlotId])
+}
+
+model OtpToken {
+  id        String   @id @default(uuid())
+  email     String
+  token     String   // hashed token
+  expiresAt DateTime
+  used      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([email, token])
+  @@index([expiresAt])
+}
+
