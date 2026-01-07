@@ -250,7 +250,6 @@ export default function Home() {
           </div>
         </div>
       </footer>
-    </div>
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent>
