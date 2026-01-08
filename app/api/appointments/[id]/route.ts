@@ -3,6 +3,9 @@ import { prisma } from '@/lib/prisma'
 import { sendEmail } from '@/lib/email'
 import { z } from 'zod'
 
+export const dynamic = 'force-dynamic'
+export const runtime = 'nodejs'
+
 const updateAppointmentSchema = z.object({
   timeSlotId: z.string().uuid().optional(),
   status: z.enum(['scheduled', 'rescheduled', 'cancelled', 'completed']).optional(),

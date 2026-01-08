@@ -4,6 +4,9 @@ import { sendEmail, generateAppointmentConfirmationEmail, generateNewAppointment
 import { isAdminEmail } from '@/lib/auth'
 import { z } from 'zod'
 
+export const dynamic = 'force-dynamic'
+export const runtime = 'nodejs'
+
 const createAppointmentSchema = z.object({
   clientEmail: z.string().email(),
   clientName: z.string().optional(),
