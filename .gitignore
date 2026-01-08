@@ -38,5 +38,5 @@ next-env.d.ts
 # prisma
 /dev.db
 /dev.db-journal
-
-# Force update
+*.db
+*.db-journal
